@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Junior English Quest - ATS Kelas 8 SMP Dhammāsoka</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5e35b1;
+            --primary-light: #7e57c2;
+            --accent: #ff9800;
+            --accent-hover: #f57c00;
+            --bg-start: #ede7f6;
+            --bg-end: #d1c4e9;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --correct: #2ecc71;
+            --wrong: #e74c3c;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(94, 53, 177, 0.15);
+            overflow: hidden;
+            border: 4px solid #b39ddb;
+            position: relative;
+        }
+
+        /* Screen States */
+        .screen {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        h1 { font-size: 2rem; margin-bottom: 8px; }
+
+        .school-header {
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #555;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-tag {
+            background: #fff3e0;
+            color: var(--accent);
+            font-weight: 800;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            border: 2px dashed var(--accent);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #b39ddb;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(94, 53, 177, 0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--accent);
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 5px 0 #e65100;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #e65100;
+        }
+
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #e65100;
+        }
+
+        /* HUD Header */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f3e5f5;
+            padding: 12px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 2px solid #e1bee7;
+        }
+
+        .player-info {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            transition: width 0.3s ease;
+        }
+
+        /* Reading Material Box */
+        .reading-box {
+            background: #fffde7;
+            border-left: 5px solid #fbc02d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            max-height: 220px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .reading-box h4 {
+            color: #f57f17;
+            margin-bottom: 5px;
+        }
+
+        /* Question Section */
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 14px 18px;
+            border-radius: 14px;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-btn:hover {
+            background: #ede7f6;
+            border-color: var(--primary-light);
+        }
+
+        .option-btn.selected {
+            background: #d1c4e9;
+            border-color: var(--primary);
+            font-weight: 800;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            gap: 15px;
+        }
+
+        .btn-secondary {
+            background: #78909c;
+            box-shadow: 0 5px 0 #455a64;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #546e7a;
+            box-shadow: 0 7px 0 #455a64;
+        }
+
+        /* Result Screen */
+        .result-card {
+            background: #f3e5f5;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            border: 3px dashed var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-family: 'Fredoka One', cursive;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .summary-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            font-weight: 700;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #d1c4e9;
+        }
+
+        .stat-box.correct-box { color: var(--correct); }
+        .stat-box.wrong-box { color: var(--wrong); }
+
+        @media (max-width: 600px) {
+            .screen { padding: 20px; }
+            h1 { font-size: 1.6rem; }
+            .score-display { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <!-- SCREEN 1: WELCOME / REGISTRATION -->
+    <div id="screen-welcome" class="screen active">
+        <div style="text-align: center;">
+            <div class="school-header">SMP DHAMMĀSOKA BANJARMASIN</div>
+            <span class="badge-tag">FASE D - KELAS VIII GANJIL</span>
+            <h1>JUNIOR ENGLISH QUEST 🎮</h1>
+            <p style="color: #666; margin-bottom: 25px;">Asesmen Tengah Semester Bahasa Inggris (50 Soal Pilihan Ganda)</p>
+        </div>
+
+        <form id="start-form" onsubmit="startGame(event)">
+            <div class="input-group">
+                <label for="player-name">Nama Lengkap Siswa:</label>
+                <input type="text" id="player-name" placeholder="Masukkan nama kamu..." required>
+            </div>
+            <div class="input-group">
+                <label for="player-class">Kelas:</label>
+                <select id="player-class" required>
+                    <option value="">-- Pilih Kelas --</option>
+                    <option value="8-A">8-A</option>
+                    <option value="8-B">8-B</option>
+                    <option value="8-C">8-C</option>
+                    <option value="8-D">8-D</option>
+                    <option value="8-E">8-E</option>
+                </select>
+            </div>
+            <button type="submit" class="btn" style="margin-top: 10px;">MULAI ASESMEN 🚀</button>
+        </form>
+    </div>
+
+    <!-- SCREEN 2: QUIZ GAMEPLAY -->
+    <div id="screen-quiz" class="screen">
+        <div class="hud">
+            <div class="player-info">
+                👤 <span id="hud-name">Nama</span> (<span id="hud-class">Kelas</span>)
+            </div>
+            <div style="font-weight: 800; color: #e65100;" id="hud-counter">
+                Soal 1 / 50
+            </div>
+        </div>
+
+        <div class="progress-bar-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <!-- Teks Bacaan / Dialog / Story -->
+        <div id="reading-container" class="reading-box" style="display: none;">
+            <h4 id="reading-title">📖 Reading Context</h4>
+            <div id="reading-content"></div>
+        </div>
+
+        <div class="question-text" id="question-text">
+            Loading question...
+        </div>
+
+        <div class="options-grid" id="options-container">
+            <!-- Options generated dynamically -->
+        </div>
+
+        <div class="nav-controls">
+            <button id="btn-prev" class="btn btn-secondary" onclick="prevQuestion()" style="visibility: hidden;">⬅ Kembali</button>
+            <button id="btn-next" class="btn" onclick="nextQuestion()">Lanjut ➡</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: RESULT REPORT -->
+    <div id="screen-result" class="screen">
+        <div style="text-align: center;">
+            <span class="badge-tag">HASIL ASESMEN TENGAH SEMESTER</span>
+            <h1>EXAM COMPLETED! 🎉</h1>
+        </div>
+
+        <div class="result-card">
+            <h3 id="result-player-name">Nama Siswa</h3>
+            <p id="result-player-class" style="color: #666; font-weight: 700;">Kelas</p>
+            
+            <div class="score-display" id="result-score">0</div>
+            <p id="result-feedback" style="font-weight: 800; font-size: 1.1rem; color: var(--primary);"></p>
+
+            <div class="summary-details">
+                <div class="stat-box correct-box">
+                    ✔️ Benar: <span id="stat-correct">0</span>
+                </div>
+                <div class="stat-box wrong-box">
+                    ❌ Salah: <span id="stat-wrong">0</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="restartGame()">🔄 Main Lagi / Ganti Siswa</button>
+    </div>
+</div>
+
+<script>
+    // DATA 50 SOAL DARI NASKAH ATS KELAS 8
+    const quizData = [
+        // Q1-3 Dialogue Teacher & Galang
+        {
+            reading: "<b>Teacher:</b> All right, class. Please put away your mobile phones and open your English textbook to page 25.<br><b>Galang:</b> Excuse me, Ma'am. Could you speak a bit slower, please? We didn't hear the page number clearly.<br><b>Teacher:</b> Of course, Galang. Open page 25 and look at Exercise B.",
+            readingTitle: "💬 Dialogue 1: In the Classroom",
+            question: "1. What does the teacher ask the students to do first?",
+            options: ["A. Open page 25", "B. Do Exercise B", "C. Put away their mobile phones", "D. Speak a bit slower"],
+            answer: 2 // C
+        },
+        {
+            reading: "<b>Teacher:</b> All right, class. Please put away your mobile phones and open your English textbook to page 25.<br><b>Galang:</b> Excuse me, Ma'am. Could you speak a bit slower, please? We didn't hear the page number clearly.<br><b>Teacher:</b> Of course, Galang. Open page 25 and look at Exercise B.",
+            readingTitle: "💬 Dialogue 1: In the Classroom",
+            question: "2. Which expression shows Galang politely asking for clarification?",
+            options: [
+                "A. \"Put away your mobile phones.\"",
+                "B. \"Could you speak a bit slower, please?\"",
+                "C. \"Open your English textbook to page 25.\"",
+                "D. \"We didn't hear the page number.\""
+            ],
+            answer: 1 // B
+        },
+        {
+            reading: "<b>Teacher:</b> All right, class. Please put away your mobile phones and open your English textbook to page 25.<br><b>Galang:</b> Excuse me, Ma'am. Could you speak a bit slower, please? We didn't hear the page number clearly.<br><b>Teacher:</b> Of course, Galang. Open page 25 and look at Exercise B.",
+            readingTitle: "💬 Dialogue 1: In the Classroom",
+            question: "3. Why does Galang interrupt the teacher politely?",
+            options: [
+                "A. He wants to play with his phone.",
+                "B. He forgot to bring his English textbook.",
+                "C. He needs the teacher to repeat the instruction clearly.",
+                "D. He wants to answer Exercise B immediately."
+            ],
+            answer: 2 // C
+        },
+        // Q4-6 Dialogue Sinta & Monita
+        {
+            reading: "<b>Sinta:</b> Wow, Monita! That’s an amazing presentation on environmental protection. Your slides were so clear!<br><b>Monita:</b> Thank you, Sinta. I worked hard on it last night. By the way, do you enjoy public speaking?<br><b>Sinta:</b> Honestly, I dislike speaking in front of many people. I prefer writing short essays.",
+            readingTitle: "💬 Dialogue 2: Presentation Praise",
+            question: "4. How does Sinta compliment Monita?",
+            options: [
+                "A. By asking her about public speaking.",
+                "B. By praising her presentation and clear slides.",
+                "C. By offering to help with her slides.",
+                "D. By showing her written short essays."
+            ],
+            answer: 1 // B
+        },
+        {
+            reading: "<b>Sinta:</b> Wow, Monita! That’s an amazing presentation on environmental protection. Your slides were so clear!<br><b>Monita:</b> Thank you, Sinta. I worked hard on it last night. By the way, do you enjoy public speaking?<br><b>Sinta:</b> Honestly, I dislike speaking in front of many people. I prefer writing short essays.",
+            readingTitle: "💬 Dialogue 2: Presentation Praise",
+            question: "5. What is Sinta’s attitude toward public speaking?",
+            options: ["A. She loves it very much.", "B. She doesn't mind doing it.", "C. She is fond of it.", "D. She dislikes it."],
+            answer: 3 // D
+        },
+        {
+            reading: "<b>Sinta:</b> Wow, Monita! That’s an amazing presentation on environmental protection. Your slides were so clear!<br><b>Monita:</b> Thank you, Sinta. I worked hard on it last night. By the way, do you enjoy public speaking?<br><b>Sinta:</b> Honestly, I dislike speaking in front of many people. I prefer writing short essays.",
+            readingTitle: "💬 Dialogue 2: Presentation Praise",
+            question: "6. From the dialogue, we can infer that Monita is a student who is...",
+            options: ["A. Lazy and careless", "B. Dedicated and appreciative", "C. Shy and unconfident", "D. Impatient and arrogant"],
+            answer: 1 // B
+        },
+        // Q7-8 Dialogue Raffi & Bagas
+        {
+            reading: "<b>Raffi:</b> You live near the school, don't you? (Falling tone)<br><b>Bagas:</b> Yes, I walk to school every morning. What about you? (Rising tone)",
+            readingTitle: "💬 Dialogue 3: Intonation & Pitch",
+            question: "7. Raffi speaks with a falling tone because he is...",
+            options: [
+                "A. Asking an uncertain question",
+                "B. Making a statement or confirming a known fact",
+                "C. Expressing anger and frustration",
+                "D. Asking a direct question to get brand new information."
+            ],
+            answer: 1 // B
+        },
+        {
+            reading: "<b>Raffi:</b> You live near the school, don't you? (Falling tone)<br><b>Bagas:</b> Yes, I walk to school every morning. What about you? (Rising tone)",
+            readingTitle: "💬 Dialogue 3: Intonation & Pitch",
+            question: "8. Bagas uses a rising tone at the end of his response (\"What about you?\") because he wants to...",
+            options: [
+                "A. End the conversation abruptly",
+                "B. Check if Raffi is listening to him",
+                "C. Invite Raffi to give information about himself",
+                "D. Show that he disagrees with Raffi"
+            ],
+            answer: 2 // C
+        },
+        // Q9-10 Dialogue Andre & Made
+        {
+            reading: "<b>Andre:</b> What do you think about playing online games on weekends?<br><b>Made:</b> I really enjoy playing strategy games with my brother. However, I can't stand playing games that take more than three hours.",
+            readingTitle: "💬 Dialogue 4: Preferences",
+            question: "9. What does Made dislike doing?",
+            options: [
+                "A. Playing online games with his brother",
+                "B. Playing strategy games",
+                "C. Playing games for more than three hours",
+                "D. Spending weekends at home"
+            ],
+            answer: 2 // C
+        },
+        {
+            reading: "<b>Andre:</b> What do you think about playing online games on weekends?<br><b>Made:</b> I really enjoy playing strategy games with my brother. However, I can't stand playing games that take more than three hours.",
+            readingTitle: "💬 Dialogue 4: Preferences",
+            question: "10. Which phrase shows Made’s strong dislike?",
+            options: ["A. \"I really enjoy...\"", "B. \"What do you think...\"", "C. \"I can't stand...\"", "D. \"Strategy games...\""],
+            answer: 2 // C
+        },
+        // Q11-16 Pipit Description
+        {
+            reading: "My classmate, Pipit, is an extraordinary person. She (11. be) always cheerful and friendly to everyone in our class. Pipit (12. have) dark curly hair and sharp eyes. She (13. not / like) procrastinating on her homework. Furthermore, she always (14. help) classmates who struggle with difficult math problems. She is very generous with her time. (15), Pipit is active in the student council, so everyone respects her.",
+            readingTitle: "📄 Text 1: Describing Pipit",
+            question: "11. Choose the correct verb form for number (11).",
+            options: ["A. am", "B. is", "C. are", "D. be"],
+            answer: 1 // B
+        },
+        {
+            reading: "My classmate, Pipit, is an extraordinary person. She (11. be) always cheerful and friendly to everyone in our class. Pipit (12. have) dark curly hair and sharp eyes. She (13. not / like) procrastinating on her homework. Furthermore, she always (14. help) classmates who struggle with difficult math problems. She is very generous with her time. (15), Pipit is active in the student council, so everyone respects her.",
+            readingTitle: "📄 Text 1: Describing Pipit",
+            question: "12. Choose the correct verb form for number (12).",
+            options: ["A. have", "B. has", "C. having", "D. had"],
+            answer: 1 // B
+        },
+        {
+            reading: "My classmate, Pipit, is an extraordinary person. She (11. be) always cheerful and friendly to everyone in our class. Pipit (12. have) dark curly hair and sharp eyes. She (13. not / like) procrastinating on her homework. Furthermore, she always (14. help) classmates who struggle with difficult math problems. She is very generous with her time. (15), Pipit is active in the student council, so everyone respects her.",
+            readingTitle: "📄 Text 1: Describing Pipit",
+            question: "13. Choose the correct negative form for number (13).",
+            options: ["A. do not like", "B. isn't like", "C. doesn't like", "D. don't likes"],
+            answer: 2 // C
+        },
+        {
+            reading: "My classmate, Pipit, is an extraordinary person. She (11. be) always cheerful and friendly to everyone in our class. Pipit (12. have) dark curly hair and sharp eyes. She (13. not / like) procrastinating on her homework. Furthermore, she always (14. help) classmates who struggle with difficult math problems. She is very generous with her time. (15), Pipit is active in the student council, so everyone respects her.",
+            readingTitle: "📄 Text 1: Describing Pipit",
+            question: "14. Choose the correct verb form for number (14).",
+            options: ["A. helps", "B. help", "C. helping", "D. helped"],
+            answer: 0 // A
+        },
+        {
+            reading: "My classmate, Pipit, is an extraordinary person. She (11. be) always cheerful and friendly to everyone in our class. Pipit (12. have) dark curly hair and sharp eyes. She (13. not / like) procrastinating on her homework. Furthermore, she always (14. help) classmates who struggle with difficult math problems. She is very generous with her time. (15), Pipit is active in the student council, so everyone respects her.",
+            readingTitle: "📄 Text 1: Describing Pipit",
+            question: "15. Choose the correct transition word to connect sentences for number (15).",
+            options: ["A. However", "B. Moreover", "C. Although", "D. But"],
+            answer: 1 // B
+        },
+        {
+            reading: "My classmate, Pipit, is an extraordinary person. She (11. be) always cheerful and friendly to everyone in our class. Pipit (12. have) dark curly hair and sharp eyes. She (13. not / like) procrastinating on her homework. Furthermore, she always (14. help) classmates who struggle with difficult math problems. She is very generous with her time. (15), Pipit is active in the student council, so everyone respects her.",
+            readingTitle: "📄 Text 1: Describing Pipit",
+            question: "16. What is the main purpose of the text above?",
+            options: [
+                "A. To tell a story about Pipit's past activity",
+                "B. To describe Pipit's physical appearance and personality",
+                "C. To explain how Pipit solves math problems",
+                "D. To persuade readers to join the student council"
+            ],
+            answer: 1 // B
+        },
+        // Q17-20 Grammar & Transitions
+        {
+            reading: null,
+            question: "17. Which of the following is a nominal sentence in Simple Present Tense?",
+            options: [
+                "A. Galang plays badminton every Sunday afternoon.",
+                "B. Monita and Sinta are smart and hard-working students.",
+                "C. They study together at the school library.",
+                "D. Andre brings his lunchbox to school everyday."
+            ],
+            answer: 1 // B
+        },
+        {
+            reading: null,
+            question: "18. Which of the following is a verbal sentence in Simple Present Tense?",
+            options: [
+                "A. The classroom is very clean and tidy today.",
+                "B. Mr. Rahmad is our favorite English teacher.",
+                "C. Students write daily journals in their notebooks.",
+                "D. We are happy with the assessment result."
+            ],
+            answer: 2 // C
+        },
+        {
+            reading: null,
+            question: "19. Read this sentence: \"Pipit is very generous, but her brother can be quite stingy.\" What is the antonym of generous?",
+            options: ["A. Helpful", "B. Kind", "C. Stingy", "D. Cheerful"],
+            answer: 2 // C
+        },
+        {
+            reading: "Kiki is an honest student. He never lies to his friends or teachers. ________, he always returns lost items to the lost and found center.",
+            readingTitle: "📄 Transition Practice",
+            question: "20. Choose the most suitable transition word to complete the paragraph.",
+            options: ["A. Furthermore", "B. On the other hand", "C. In contrast", "D. However"],
+            answer: 0 // A
+        },
+        // Q21-25 Mirza Basketball
+        {
+            reading: "(1) My best friend, Mirza, is a confident boy who loves playing basketball. (2) He practices every afternoon with his team on the school court. (3) Mirza is never pessimistic about his matches; he always believes his team can win through hard work. (4) In addition, he treats all players with respect.",
+            readingTitle: "📄 Text 2: Describing Mirza",
+            question: "21. What is Mirza’s hobby?",
+            options: ["A. Writing short stories", "B. Playing basketball", "C. Studying math", "D. Collecting sports gear"],
+            answer: 1 // B
+        },
+        {
+            reading: "(1) My best friend, Mirza, is a confident boy who loves playing basketball. (2) He practices every afternoon with his team on the school court. (3) Mirza is never pessimistic about his matches; he always believes his team can win through hard work. (4) In addition, he treats all players with respect.",
+            readingTitle: "📄 Text 2: Describing Mirza",
+            question: "22. What is the antonym of the underlined word \"pessimistic\" in sentence (3)?",
+            options: ["A. Lazy", "B. Optimistic", "C. Careless", "D. Honest"],
+            answer: 1 // B
+        },
+        {
+            reading: "(1) My best friend, Mirza, is a confident boy who loves playing basketball. (2) He practices every afternoon with his team on the school court. (3) Mirza is never pessimistic about his matches; he always believes his team can win through hard work. (4) In addition, he treats all players with respect.",
+            readingTitle: "📄 Text 2: Describing Mirza",
+            question: "23. What personality trait best describes Mirza based on the text?",
+            options: [
+                "A. Shy and sensitive",
+                "B. Arrogant and bossy",
+                "C. Confident and supportive",
+                "D. Forgetful and clumsy"
+            ],
+            answer: 2 // C
+        },
+        {
+            reading: "(1) My best friend, Mirza, is a confident boy who loves playing basketball. (2) He practices every afternoon with his team on the school court. (3) Mirza is never pessimistic about his matches; he always believes his team can win through hard work. (4) In addition, he treats all players with respect.",
+            readingTitle: "📄 Text 2: Describing Mirza",
+            question: "24. \"In addition, he treats all players with respect.\" (Sentence 4). The phrase \"In addition\" has a similar function to...",
+            options: ["A. But", "B. Moreover", "C. Therefore", "D. Because"],
+            answer: 1 // B
+        },
+        {
+            reading: "(1) My best friend, Mirza, is a confident boy who loves playing basketball. (2) He practices every afternoon with his team on the school court. (3) Mirza is never pessimistic about his matches; he always believes his team can win through hard work. (4) In addition, he treats all players with respect.",
+            readingTitle: "📄 Text 2: Describing Mirza",
+            question: "25. Which sentence uses the correct Subject-Verb Agreement?",
+            options: [
+                "A. Mirza and his friends plays basketball every day.",
+                "B. Mirza and his friends play basketball every day.",
+                "C. Mirza play basketball every day.",
+                "D. Mirza and his friends is playing basketball every day."
+            ],
+            answer: 1 // B
+        },
+        // Q26-30 Dialogue Galang & Andre (Camping)
+        {
+            reading: "<b>Galang:</b> Hi, Andre! (26) _______ did you spend your last weekend?<br><b>Andre:</b> Hi, Galang! I went camping with my scout group at Mount Pancar.<br><b>Galang:</b> That sounds exciting! (27) _______ did you go there?<br><b>Andre:</b> We went there last Saturday morning by minibus.<br><b>Galang:</b> What (28) _______ you do during the camping trip?<br><b>Andre:</b> We (29) _______ (set up) tents, sang around the campfire, and hiked through the forest. We (30) _______ (have) a wonderful time!",
+            readingTitle: "💬 Dialogue 5: Camping Trip",
+            question: "26. Choose the correct question word for number (26).",
+            options: ["A. What", "B. Where", "C. Who", "D. Why"],
+            answer: 1 // B
+        },
+        {
+            reading: "<b>Galang:</b> Hi, Andre! (26) _______ did you spend your last weekend?<br><b>Andre:</b> Hi, Galang! I went camping with my scout group at Mount Pancar.<br><b>Galang:</b> That sounds exciting! (27) _______ did you go there?<br><b>Andre:</b> We went there last Saturday morning by minibus.<br><b>Galang:</b> What (28) _______ you do during the camping trip?<br><b>Andre:</b> We (29) _______ (set up) tents, sang around the campfire, and hiked through the forest. We (30) _______ (have) a wonderful time!",
+            readingTitle: "💬 Dialogue 5: Camping Trip",
+            question: "27. Choose the correct question word for number (27).",
+            options: ["A. When", "B. Where", "C. How", "D. What"],
+            answer: 0 // A
+        },
+        {
+            reading: "<b>Galang:</b> Hi, Andre! (26) _______ did you spend your last weekend?<br><b>Andre:</b> Hi, Galang! I went camping with my scout group at Mount Pancar.<br><b>Galang:</b> That sounds exciting! (27) _______ did you go there?<br><b>Andre:</b> We went there last Saturday morning by minibus.<br><b>Galang:</b> What (28) _______ you do during the camping trip?<br><b>Andre:</b> We (29) _______ (set up) tents, sang around the campfire, and hiked through the forest. We (30) _______ (have) a wonderful time!",
+            readingTitle: "💬 Dialogue 5: Camping Trip",
+            question: "28. Choose the correct auxiliary verb for past question for number (28).",
+            options: ["A. do", "B. does", "C. did", "D. were"],
+            answer: 2 // C
+        },
+        {
+            reading: "<b>Galang:</b> Hi, Andre! (26) _______ did you spend your last weekend?<br><b>Andre:</b> Hi, Galang! I went camping with my scout group at Mount Pancar.<br><b>Galang:</b> That sounds exciting! (27) _______ did you go there?<br><b>Andre:</b> We went there last Saturday morning by minibus.<br><b>Galang:</b> What (28) _______ you do during the camping trip?<br><b>Andre:</b> We (29) _______ (set up) tents, sang around the campfire, and hiked through the forest. We (30) _______ (have) a wonderful time!",
+            readingTitle: "💬 Dialogue 5: Camping Trip",
+            question: "29. Choose the correct past verb form (regular) for number (29).",
+            options: ["A. set up", "B. setted up", "C. setting up", "D. sets up"],
+            answer: 0 // A
+        },
+        {
+            reading: "<b>Galang:</b> Hi, Andre! (26) _______ did you spend your last weekend?<br><b>Andre:</b> Hi, Galang! I went camping with my scout group at Mount Pancar.<br><b>Galang:</b> That sounds exciting! (27) _______ did you go there?<br><b>Andre:</b> We went there last Saturday morning by minibus.<br><b>Galang:</b> What (28) _______ you do during the camping trip?<br><b>Andre:</b> We (29) _______ (set up) tents, sang around the campfire, and hiked through the forest. We (30) _______ (have) a wonderful time!",
+            readingTitle: "💬 Dialogue 5: Camping Trip",
+            question: "30. Choose the correct past verb form (irregular) for number (30).",
+            options: ["A. has", "B. haved", "C. had", "D. having"],
+            answer: 2 // C
+        },
+        // Q31-33 List of Verbs
+        {
+            reading: "1. walk -> walked<br>2. go -> went<br>3. clean -> cleaned<br>4. buy -> bought<br>5. visit -> visited",
+            readingTitle: "📋 List of Past Verbs",
+            question: "31. Which numbers represent regular verbs in the simple past tense?",
+            options: ["A. 1, 2, and 4", "B. 1, 3, and 5", "C. 2, 4, and 5", "D. 2, 3, and 4"],
+            answer: 1 // B
+        },
+        {
+            reading: "1. walk -> walked<br>2. go -> went<br>3. clean -> cleaned<br>4. buy -> bought<br>5. visit -> visited",
+            readingTitle: "📋 List of Past Verbs",
+            question: "32. Which numbers represent irregular verbs in the simple past tense?",
+            options: ["A. 1 and 3", "B. 3 and 5", "C. 2 and 4", "D. 1 and 5"],
+            answer: 2 // C
+        },
+        {
+            reading: null,
+            question: "33. Choose the correct pair of Infinitive -> Past Form (Irregular Verb) below:",
+            options: ["A. Study -> Studied", "B. Write -> Wrote", "C. Play -> Played", "D. Watch -> Watched"],
+            answer: 1 // B
+        },
+        // Q34-35 Monita's Notebook
+        {
+            reading: "Yesterday, Monita (34. lose) her English notebook in the library. She (35. look) for it everywhere, but she couldn't find it until the librarian called her.",
+            readingTitle: "📄 Story Snippet: Monita's Notebook",
+            question: "34. Complete blank (34) with the correct irregular verb form.",
+            options: ["A. loses", "B. losed", "C. lost", "D. losing"],
+            answer: 2 // C
+        },
+        {
+            reading: "Yesterday, Monita (34. lose) her English notebook in the library. She (35. look) for it everywhere, but she couldn't find it until the librarian called her.",
+            readingTitle: "📄 Story Snippet: Monita's Notebook",
+            question: "35. Complete blank (35) with the correct regular verb form.",
+            options: ["A. looked", "B. look", "C. looks", "D. looking"],
+            answer: 0 // A
+        },
+        // Q36-42 Disastrous Independence Day Game
+        {
+            reading: "<b>A Disastrous Independence Day Game</b><br><br>Last year, my school held an Independence Day celebration in the schoolyard. I decided to enter the sack race competition because I thought it would be easy and fun.<br><br>(39) _______, all participants lined up at the starting line, wearing big gunny sacks. When the referee blew the whistle, we all started hopping as fast as we could. (40) _______, halfway through the race, my foot got stepped on my own sack. I lost my balance and fell face-first onto the muddy grass! Everyone laughed, but in a friendly way. (41) _______, I quickly stood up, brushed off the dirt, and continued hopping until I reached the finish line.<br><br>Although I came in last place, I felt happy because I didn't give up. It was an unforgettable experience.",
+            readingTitle: "📄 Text 3: Sack Race Competition",
+            question: "36. What event is described in the text?",
+            options: [
+                "A. A football match on Independence Day",
+                "B. A sack race competition during Independence Day celebration",
+                "C. A hiking trip with school friends",
+                "D. A clean-up activity at school"
+            ],
+            answer: 1 // B
+        },
+        {
+            reading: "<b>A Disastrous Independence Day Game</b><br><br>Last year, my school held an Independence Day celebration in the schoolyard. I decided to enter the sack race competition because I thought it would be easy and fun.<br><br>(39) _______, all participants lined up at the starting line, wearing big gunny sacks. When the referee blew the whistle, we all started hopping as fast as we could. (40) _______, halfway through the race, my foot got stepped on my own sack. I lost my balance and fell face-first onto the muddy grass! Everyone laughed, but in a friendly way. (41) _______, I quickly stood up, brushed off the dirt, and continued hopping until I reached the finish line.<br><br>Although I came in last place, I felt happy because I didn't give up. It was an unforgettable experience.",
+            readingTitle: "📄 Text 3: Sack Race Competition",
+            question: "37. Which paragraph represents the Orientation of the recount text?",
+            options: ["A. Paragraph 1", "B. Paragraph 2", "C. Paragraph 3", "D. Paragraph 2 and 3"],
+            answer: 0 // A
+        },
+        {
+            reading: "<b>A Disastrous Independence Day Game</b><br><br>Last year, my school held an Independence Day celebration in the schoolyard. I decided to enter the sack race competition because I thought it would be easy and fun.<br><br>(39) _______, all participants lined up at the starting line, wearing big gunny sacks. When the referee blew the whistle, we all started hopping as fast as we could. (40) _______, halfway through the race, my foot got stepped on my own sack. I lost my balance and fell face-first onto the muddy grass! Everyone laughed, but in a friendly way. (41) _______, I quickly stood up, brushed off the dirt, and continued hopping until I reached the finish line.<br><br>Although I came in last place, I felt happy because I didn't give up. It was an unforgettable experience.",
+            readingTitle: "📄 Text 3: Sack Race Competition",
+            question: "38. Why did the writer fall down during the race?",
+            options: [
+                "A. Another participant pushed him from behind.",
+                "B. The referee blew the whistle too loudly.",
+                "C. His foot got caught/stepped on his own sack.",
+                "D. The gunny sack was too heavy to lift."
+            ],
+            answer: 2 // C
+        },
+        {
+            reading: "<b>A Disastrous Independence Day Game</b><br><br>Last year, my school held an Independence Day celebration in the schoolyard. I decided to enter the sack race competition because I thought it would be easy and fun.<br><br>(39) _______, all participants lined up at the starting line, wearing big gunny sacks. When the referee blew the whistle, we all started hopping as fast as we could. (40) _______, halfway through the race, my foot got stepped on my own sack. I lost my balance and fell face-first onto the muddy grass! Everyone laughed, but in a friendly way. (41) _______, I quickly stood up, brushed off the dirt, and continued hopping until I reached the finish line.<br><br>Although I came in last place, I felt happy because I didn't give up. It was an unforgettable experience.",
+            readingTitle: "📄 Text 3: Sack Race Competition",
+            question: "39. Choose the best time connector for blank (39) to mark the beginning of the event sequence.",
+            options: ["A. Finally", "B. First", "C. After that", "D. In the end"],
+            answer: 1 // B
+        },
+        {
+            reading: "<b>A Disastrous Independence Day Game</b><br><br>Last year, my school held an Independence Day celebration in the schoolyard. I decided to enter the sack race competition because I thought it would be easy and fun.<br><br>(39) _______, all participants lined up at the starting line, wearing big gunny sacks. When the referee blew the whistle, we all started hopping as fast as we could. (40) _______, halfway through the race, my foot got stepped on my own sack. I lost my balance and fell face-first onto the muddy grass! Everyone laughed, but in a friendly way. (41) _______, I quickly stood up, brushed off the dirt, and continued hopping until I reached the finish line.<br><br>Although I came in last place, I felt happy because I didn't give up. It was an unforgettable experience.",
+            readingTitle: "📄 Text 3: Sack Race Competition",
+            question: "40. Choose the best time connector for blank (40) to continue the event.",
+            options: ["A. Then", "B. Lastly", "C. To conclude", "D. First of all"],
+            answer: 0 // A
+        },
+        {
+            reading: "<b>A Disastrous Independence Day Game</b><br><br>Last year, my school held an Independence Day celebration in the schoolyard. I decided to enter the sack race competition because I thought it would be easy and fun.<br><br>(39) _______, all participants lined up at the starting line, wearing big gunny sacks. When the referee blew the whistle, we all started hopping as fast as we could. (40) _______, halfway through the race, my foot got stepped on my own sack. I lost my balance and fell face-first onto the muddy grass! Everyone laughed, but in a friendly way. (41) _______, I quickly stood up, brushed off the dirt, and continued hopping until I reached the finish line.<br><br>Although I came in last place, I felt happy because I didn't give up. It was an unforgettable experience.",
+            readingTitle: "📄 Text 3: Sack Race Competition",
+            question: "41. Choose the best time connector for blank (41) to show the final event sequence.",
+            options: ["A. Meanwhile", "B. Suddenly", "C. After that", "D. Before"],
+            answer: 2 // C
+        },
+        {
+            reading: "<b>A Disastrous Independence Day Game</b><br><br>Last year, my school held an Independence Day celebration in the schoolyard. I decided to enter the sack race competition because I thought it would be easy and fun.<br><br>(39) _______, all participants lined up at the starting line, wearing big gunny sacks. When the referee blew the whistle, we all started hopping as fast as we could. (40) _______, halfway through the race, my foot got stepped on my own sack. I lost my balance and fell face-first onto the muddy grass! Everyone laughed, but in a friendly way. (41) _______, I quickly stood up, brushed off the dirt, and continued hopping until I reached the finish line.<br><br>Although I came in last place, I felt happy because I didn't give up. It was an unforgettable experience.",
+            readingTitle: "📄 Text 3: Sack Race Competition",
+            question: "42. What lesson or feeling can be inferred from the Re-orientation (ending) of the text?",
+            options: [
+                "A. Winning is the only important thing in a game.",
+                "B. The writer felt embarrassed and angry at his classmates.",
+                "C. Perseverance and not giving up matter more than winning.",
+                "D. The writer regretted participating in the sack race."
+            ],
+            answer: 2 // C
+        },
+        // Q43 Jumbled Sentences
+        {
+            reading: "1. Finally, we returned home tired but happy at 5 PM.<br>2. Last Sunday, my family and I visited the local zoo.<br>3. After seeing the animals, we sat under a tree and enjoyed our lunch.<br>4. First, we bought tickets and walked to the bird enclosure.",
+            readingTitle: "🧩 Jumbled Sentences",
+            question: "43. What is the correct, logical sequence to form a good Recount Text?",
+            options: ["A. 2 – 4 – 3 – 1", "B. 2 – 3 – 4 – 1", "C. 4 – 2 – 3 – 1", "D. 1 – 2 – 4 – 3"],
+            answer: 0 // A
+        },
+        // Q44-47 Cooking Fried Rice
+        {
+            reading: "<b>My First Time Cooking Fried Rice</b><br>Last night, my mother was sick, so I decided to make dinner for our family. I wanted to cook simple egg fried rice.<br>First, I chopped some garlic, shallots, and red chilies. Next, I heated some cooking oil in a pan and scrambled two eggs. After that, I added the chopped spices and poured three plates of cooked rice into the pan. I stirred everything thoroughly and added a spoonful of soy sauce and salt.<br>Finally, I served the warm fried rice on plates. My father tasted it and said it was delicious! I felt proud of myself.",
+            readingTitle: "📄 Text 4: Cooking Fried Rice",
+            question: "44. Why did the writer cook dinner last night?",
+            options: [
+                "A. Because he was practicing for a cooking test.",
+                "B. Because his mother was sick.",
+                "C. Because his father asked for fried rice.",
+                "D. Because there was no food left at home."
+            ],
+            answer: 1 // B
+        },
+        {
+            reading: "<b>My First Time Cooking Fried Rice</b><br>Last night, my mother was sick, so I decided to make dinner for our family. I wanted to cook simple egg fried rice.<br>First, I chopped some garlic, shallots, and red chilies. Next, I heated some cooking oil in a pan and scrambled two eggs. After that, I added the chopped spices and poured three plates of cooked rice into the pan. I stirred everything thoroughly and added a spoonful of soy sauce and salt.<br>Finally, I served the warm fried rice on plates. My father tasted it and said it was delicious! I felt proud of myself.",
+            readingTitle: "📄 Text 4: Cooking Fried Rice",
+            question: "45. What step did the writer do right after heating the cooking oil?",
+            options: [
+                "A. Chopped garlic and shallots",
+                "B. Poured three plates of cooked rice",
+                "C. Scrambled two eggs",
+                "D. Added soy sauce and salt"
+            ],
+            answer: 2 // C
+        },
+        {
+            reading: "<b>My First Time Cooking Fried Rice</b><br>Last night, my mother was sick, so I decided to make dinner for our family. I wanted to cook simple egg fried rice.<br>First, I chopped some garlic, shallots, and red chilies. Next, I heated some cooking oil in a pan and scrambled two eggs. After that, I added the chopped spices and poured three plates of cooked rice into the pan. I stirred everything thoroughly and added a spoonful of soy sauce and salt.<br>Finally, I served the warm fried rice on plates. My father tasted it and said it was delicious! I felt proud of myself.",
+            readingTitle: "📄 Text 4: Cooking Fried Rice",
+            question: "46. \"I stirred everything thoroughly...\" The word \"thoroughly\" means...",
+            options: [
+                "A. Quickly and carelessly",
+                "B. Completely and carefully",
+                "C. Slowly and hesitantly",
+                "D. Loudly and wildly"
+            ],
+            answer: 1 // B
+        },
+        {
+            reading: "<b>My First Time Cooking Fried Rice</b><br>Last night, my mother was sick, so I decided to make dinner for our family. I wanted to cook simple egg fried rice.<br>First, I chopped some garlic, shallots, and red chilies. Next, I heated some cooking oil in a pan and scrambled two eggs. After that, I added the chopped spices and poured three plates of cooked rice into the pan. I stirred everything thoroughly and added a spoonful of soy sauce and salt.<br>Finally, I served the warm fried rice on plates. My father tasted it and said it was delicious! I felt proud of myself.",
+            readingTitle: "📄 Text 4: Cooking Fried Rice",
+            question: "47. Which sentence from the text shows the writer's feeling/reflection at the end of the experience?",
+            options: [
+                "A. \"I wanted to cook simple egg fried rice.\"",
+                "B. \"My father tasted it and said it was delicious!\"",
+                "C. \"I felt proud of myself.\"",
+                "D. \"I served the warm fried rice on plates.\""
+            ],
+            answer: 2 // C
+        },
+        // Q48-50 Made Raincoat Snippet
+        {
+            reading: "Two days ago, Made (48) _______ (forget) to bring his raincoat to school. On his way home, heavy rain suddenly (49) _______ (start) to fall. He didn't have an umbrella either. (50) _______, he decided to wait under a shelter for an hour until the rain stopped.",
+            readingTitle: "📄 Snippet: Made's Raincoat",
+            question: "48. Complete blank (48) with the correct verb form.",
+            options: ["A. forgets", "B. forgot", "C. forgetted", "D. forgetting"],
+            answer: 1 // B
+        },
+        {
+            reading: "Two days ago, Made (48) _______ (forget) to bring his raincoat to school. On his way home, heavy rain suddenly (49) _______ (start) to fall. He didn't have an umbrella either. (50) _______, he decided to wait under a shelter for an hour until the rain stopped.",
+            readingTitle: "📄 Snippet: Made's Raincoat",
+            question: "49. Complete blank (49) with the correct verb form.",
+            options: ["A. start", "B. starting", "C. started", "D. starts"],
+            answer: 2 // C
+        },
+        {
+            reading: "Two days ago, Made (48) _______ (forget) to bring his raincoat to school. On his way home, heavy rain suddenly (49) _______ (start) to fall. He didn't have an umbrella either. (50) _______, he decided to wait under a shelter for an hour until the rain stopped.",
+            readingTitle: "📄 Snippet: Made's Raincoat",
+            question: "50. Complete blank (50) with the most appropriate transition word/connector.",
+            options: ["A. As a result", "B. Although", "C. In addition", "D. Before"],
+            answer: 0 // A
+        }
+    ];
+
+    // State Variables
+    let playerName = "";
+    let playerClass = "";
+    let currentQuestionIndex = 0;
+    let userAnswers = new Array(quizData.length).fill(null);
+
+    // OPTIONAL: Insert Google Apps Script Web App URL here to autosave scores
+    const SCRIPT_URL = "";
+
+    // DOM Elements
+    const screenWelcome = document.getElementById('screen-welcome');
+    const screenQuiz = document.getElementById('screen-quiz');
+    const screenResult = document.getElementById('screen-result');
+
+    // Start Game Handler
+    function startGame(e) {
+        e.preventDefault();
+        playerName = document.getElementById('player-name').value.trim();
+        playerClass = document.getElementById('player-class').value;
+
+        if(!playerName || !playerClass) return;
+
+        // Set HUD Data
+        document.getElementById('hud-name').innerText = playerName;
+        document.getElementById('hud-class').innerText = playerClass;
+
+        // Switch Screen
+        screenWelcome.classList.remove('active');
+        screenQuiz.classList.add('active');
+
+        // Render First Question
+        loadQuestion();
+    }
+
+    // Load Question Content
+    function loadQuestion() {
+        const qData = quizData[currentQuestionIndex];
+
+        // Update HUD & Progress
+        document.getElementById('hud-counter').innerText = `Soal ${currentQuestionIndex + 1} / ${quizData.length}`;
+        const progressPercent = ((currentQuestionIndex + 1) / quizData.length) * 100;
+        document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+        // Reading Text Box
+        const readingContainer = document.getElementById('reading-container');
+        if(qData.reading) {
+            readingContainer.style.display = 'block';
+            document.getElementById('reading-title').innerText = qData.readingTitle;
+            document.getElementById('reading-content').innerHTML = qData.reading;
+        } else {
+            readingContainer.style.display = 'none';
+        }
+
+        // Question & Options
+        document.getElementById('question-text').innerText = qData.question;
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        qData.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            if(userAnswers[currentQuestionIndex] === index) {
+                btn.classList.add('selected');
+            }
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(index);
+            optionsContainer.appendChild(btn);
+        });
+
+        // Control Buttons State
+        document.getElementById('btn-prev').style.visibility = currentQuestionIndex === 0 ? 'hidden' : 'visible';
+        
+        if(currentQuestionIndex === quizData.length - 1) {
+            document.getElementById('btn-next').innerText = "Selesai 🏁";
+        } else {
+            document.getElementById('btn-next').innerText = "Lanjut ➡";
+        }
+    }
+
+    // Select Option Handler
+    function selectOption(index) {
+        userAnswers[currentQuestionIndex] = index;
+        loadQuestion();
+    }
+
+    // Navigation Controls
+    function prevQuestion() {
+        if(currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            loadQuestion();
+        }
+    }
+
+    function nextQuestion() {
+        if(userAnswers[currentQuestionIndex] === null) {
+            alert("Pilih salah satu jawaban terlebih dahulu!");
+            return;
+        }
+
+        if(currentQuestionIndex < quizData.length - 1) {
+            currentQuestionIndex++;
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    // Calculate & Show Result
+    function showResult() {
+        screenQuiz.classList.remove('active');
+        screenResult.classList.add('active');
+
+        let correctCount = 0;
+        userAnswers.forEach((ans, index) => {
+            if(ans === quizData[index].answer) {
+                correctCount++;
+            }
+        });
+
+        const wrongCount = quizData.length - correctCount;
+        const finalScore = Math.round((correctCount / quizData.length) * 100);
+
+        // Display Data
+        document.getElementById('result-player-name').innerText = playerName;
+        document.getElementById('result-player-class').innerText = `Kelas: ${playerClass}`;
+        document.getElementById('result-score').innerText = finalScore;
+        document.getElementById('stat-correct').innerText = `${correctCount} Soal`;
+        document.getElementById('stat-wrong').innerText = `${wrongCount} Soal`;
+
+        // Feedback Message
+        const feedbackEl = document.getElementById('result-feedback');
+        if(finalScore >= 85) {
+            feedbackEl.innerText = "🌟 EXCELLENT! Nilai ATS kamu sangat luar biasa!";
+            feedbackEl.style.color = "#5e35b1";
+        } else if(finalScore >= 70) {
+            feedbackEl.innerText = "👍 GREAT JOB! Hasil pengerjaan yang baik!";
+            feedbackEl.style.color = "#ff9800";
+        } else {
+            feedbackEl.innerText = "💪 KEEP STUDYING! Tingkatkan terus pemahaman Bahasa Inggris kamu!";
+            feedbackEl.style.color = "#e74c3c";
+        }
+
+        // --- OPTIONAL: SEND DATA TO GOOGLE SPREADSHEET ---
+        if(SCRIPT_URL && SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbxTPOck1Af3rtvZkjjUe3bm6GBN0nL7uCuPbXsuLMpFYCQSEhRXrqkrKY4h0sT2_tes/exec") {
+            const payload = {
+                nama: playerName,
+                kelas: playerClass,
+                skor: finalScore,
+                benar: correctCount,
+                salah: wrongCount
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => console.log("Skor terkirim ke Spreadsheet"))
+            .catch(err => console.error("Gagal kirim skor:", err));
+        }
+    }
+
+    // Restart Game
+    function restartGame() {
+        currentQuestionIndex = 0;
+        userAnswers = new Array(quizData.length).fill(null);
+        document.getElementById('start-form').reset();
+        
+        screenResult.classList.remove('active');
+        screenWelcome.classList.active;
+        screenWelcome.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
